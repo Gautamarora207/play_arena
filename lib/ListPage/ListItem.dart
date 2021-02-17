@@ -2,9 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_assignment/model/PlayArena.dart';
 import 'package:flutter_assignment/constants/constants.dart';
 
-class ListItem extends StatelessWidget {
+class ListItem extends StatefulWidget {
   final PlayArena playArena;
   ListItem(this.playArena);
+
+  @override
+  _ListItemState createState() => _ListItemState();
+}
+
+class _ListItemState extends State<ListItem> with TickerProviderStateMixin {
+  AnimationController _controller;
+
+  Animation<double> _animation;
+
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    )..repeat(reverse: true);
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.elasticOut,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +59,7 @@ class ListItem extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                playArena.name,
+                widget.playArena.name,
                 style: HeaderTextStyle,
               ),
               Container(
@@ -52,13 +73,19 @@ class ListItem extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Image.network(
-                      playArena.sports.iconBlackUrl,
-                      height: 25,
-                      width: 25,
+                    RotationTransition(
+                      turns: _animation,
+                      child: Transform.rotate(
+                        angle: 0,
+                        child: Image.network(
+                          widget.playArena.sports.iconBlackUrl,
+                          height: 25,
+                          width: 25,
+                        ),
+                      ),
                     ),
                     Text(
-                      playArena.sports.name,
+                      widget.playArena.sports.name,
                       style: regularTextStyle,
                     ),
                   ],
@@ -79,7 +106,7 @@ class ListItem extends StatelessWidget {
                     width: 5,
                   ),
                   Text(
-                    "${playArena.dayOfWeeksOpen.first} - ${playArena.dayOfWeeksOpen.last}",
+                    "${widget.playArena.dayOfWeeksOpen.first} - ${widget.playArena.dayOfWeeksOpen.last}",
                     style: regularTextStyle.copyWith(color: Colors.grey),
                   ),
                 ],
@@ -94,7 +121,7 @@ class ListItem extends StatelessWidget {
                     width: 5,
                   ),
                   Text(
-                    "${playArena.openTime} - ${playArena.closeTime}",
+                    "${widget.playArena.openTime} - ${widget.playArena.closeTime}",
                     style: regularTextStyle.copyWith(color: Colors.grey),
                   ),
                 ],
@@ -114,7 +141,7 @@ class ListItem extends StatelessWidget {
                     width: 5,
                   ),
                   Text(
-                    "${playArena.costPerSlot}",
+                    widget.playArena.costPerSlot.toString(),
                     style: regularTextStyle.copyWith(color: Colors.grey),
                   ),
                 ],
@@ -129,7 +156,7 @@ class ListItem extends StatelessWidget {
                     width: 5,
                   ),
                   Text(
-                    "${playArena.slotTimeSize}",
+                    widget.playArena.slotTimeSize.toString(),
                     style: regularTextStyle.copyWith(color: Colors.grey),
                   ),
                 ],
